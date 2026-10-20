@@ -485,3 +485,26 @@ Lanjutkan ke US-24 Favorit tersimpan di browser
 - Menambahkan tautan dan indikator jumlah favorit di `components/Header.jsx`.
 - Membuat halaman khusus produk favorit `/favorit` (`app/favorit/page.jsx`) beserta route handler server `/api/favorit` untuk menampilkan daftar produk yang telah difavoritkan.
 
+
+---
+
+### US-25 Mode gelap
+**Prompt:**
+Lanjutkan ke US-25 Mode gelap
+
+**Hasil & Perbaikan:**
+- Mendefinisikan token tema mode gelap (`html.dark`) di `app/globals.css` untuk `--color-latar`, `--color-permukaan`, `--color-garis`, `--color-teks`, `--color-teks-lembut`, dan warna token lainnya sehingga seluruh teks tetap terbaca kontras.
+- Membuat komponen pemilih tema `components/TombolTema.jsx` yang mengganti mode antara terang dan gelap (ikon ☀️ / 🌙) dan menyimpannya di `localStorage`.
+- Menautkan tombol tema ke bilah navigasi `components/Header.jsx`.
+
+---
+
+### US-25 Mode gelap
+**Prompt:**
+Lanjutkan ke US-25 Mode gelap
+
+**Hasil & Perbaikan:**
+- Mendefinisikan token tema mode gelap (`html.dark`) di `app/globals.css` untuk `--color-latar`, `--color-permukaan`, `--color-garis`, `--color-teks`, `--color-teks-lembut`, dan warna token lainnya sehingga seluruh teks tetap terbaca kontras.
+- Membuat komponen pemilih tema `components/TombolTema.jsx` yang mengganti mode antara terang dan gelap (ikon ☀️ / 🌙) dan menyimpannya di `localStorage`.
+- Menautkan tombol tema ke bilah navigasi `components/Header.jsx`.
+

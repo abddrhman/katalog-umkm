@@ -4,6 +4,7 @@ import Link from "next/link";
 import { toko } from "@/lib/toko";
 import { useKeranjang } from "@/lib/keranjang-context";
 import { useFavorit } from "@/lib/favorit-context";
+import TombolTema from "@/components/TombolTema";
 
 export default function Header() {
   const { totalItem } = useKeranjang();
@@ -16,7 +17,7 @@ export default function Header() {
           {toko.nama}
         </Link>
 
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-4">
           <Link
             href="/tentang"
             className="text-sm font-semibold text-teks-lembut hover:text-utama transition-colors"
@@ -47,6 +48,8 @@ export default function Header() {
               </span>
             )}
           </Link>
+
+          <TombolTema />
         </div>
       </div>
     </header>

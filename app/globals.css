@@ -27,6 +27,23 @@ html {
   background: var(--color-latar);
 }
 
+/* Mode Gelap (Dark Mode) */
+html.dark {
+  --color-latar: #121815;
+  --color-permukaan: #1a221f;
+  --color-garis: #2c3832;
+  --color-teks: #f0f4f1;
+  --color-teks-lembut: #9eada4;
+
+  --color-utama: #2ea378;
+  --color-utama-gelap: #238561;
+
+  --color-harga: #e9b360;
+  --color-harga-latar: #322511;
+
+  --color-bahaya: #f04438;
+}
+
 :focus-visible {
   outline: 3px solid var(--color-utama);
   outline-offset: 2px;
