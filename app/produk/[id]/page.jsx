@@ -45,14 +45,27 @@ export default async function HalamanDetailProduk({ params }) {
     notFound();
   }
 
+  const isHabis =
+    produk.stok === 0 ||
+    produk.status_stok === "habis" ||
+    produk.tersedia === false;
+
   return (
     <div className="flex flex-col gap-12 py-8 md:py-12">
       <article className="grid gap-8 md:grid-cols-2">
-        <GaleriProduk
-          fotoUtama={produk.foto_url}
-          fotoTambahan={produk.foto_tambahan || produk.galeri}
-          nama={produk.nama}
-        />
+        <div className="relative">
+          <GaleriProduk
+            fotoUtama={produk.foto_url}
+            fotoTambahan={produk.foto_tambahan || produk.galeri}
+            nama={produk.nama}
+          />
+          {isHabis && (
+            <span className="absolute top-3 right-3 z-10 rounded-lg bg-bahaya px-3 py-1 text-sm font-bold text-white shadow-md">
+              Habis
+            </span>
+          )}
+        </div>
+
         <div className="flex flex-col gap-4">
           <Link
             href="/"
@@ -60,7 +73,14 @@ export default async function HalamanDetailProduk({ params }) {
           >
             Kembali ke katalog
           </Link>
-          <p className="text-sm text-teks-lembut">{produk.kategori}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-teks-lembut">{produk.kategori}</p>
+            {isHabis && (
+              <span className="rounded-md bg-bahaya/10 px-2 py-0.5 text-xs font-bold text-bahaya">
+                Stok Habis
+              </span>
+            )}
+          </div>
           <h1 className="text-3xl font-extrabold leading-tight tracking-tight">
             {produk.nama}
           </h1>
@@ -70,7 +90,17 @@ export default async function HalamanDetailProduk({ params }) {
           <p className="max-w-prose leading-relaxed text-teks-lembut">
             {produk.deskripsi}
           </p>
-          <TombolWhatsApp produk={produk} />
+
+          {isHabis ? (
+            <div className="rounded-xl border border-garis bg-permukaan p-4 text-center">
+              <p className="font-semibold text-bahaya">Produk Sedang Habis</p>
+              <p className="mt-1 text-xs text-teks-lembut">
+                Maaf, produk ini saat ini tidak dapat dipesan karena stok sedang kosong.
+              </p>
+            </div>
+          ) : (
+            <TombolWhatsApp produk={produk} />
+          )}
         </div>
       </article>
 

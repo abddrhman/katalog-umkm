@@ -345,3 +345,26 @@ Lanjutkan ke US-18 Galeri beberapa foto produk. dan juga isi file PROMPT.MD YAA 
 - Membuat komponen interaktif `components/GaleriProduk.jsx` yang menampilkan foto utama dan thumbnail gambar kecil untuk berganti foto.
 - Mendukung produk dengan lebih dari satu foto serta tetap menampilkan normal jika hanya memiliki satu foto.
 
+
+---
+
+### US-19 Status stok
+**Prompt:**
+Lanjutkan ke US-19 Status stok dan an juga isi file PROMPT.MD YAA DAN SETERUS NYA JIKA SAYA KASI US DI ISI YA
+
+**Hasil & Perbaikan:**
+- Mendukung status/jumlah stok produk (`stok === 0` atau `status_stok === 'habis'`).
+- Menampilkan penanda/badge "Habis" di kartu produk (`KartuProduk.jsx`) dan halaman detail produk (`app/produk/[id]/page.jsx`).
+- Menonaktifkan/menyembunyikan tombol pesan WhatsApp untuk produk yang habis dan menampilkan informasi bahwa stok produk sedang kosong.
+
+---
+
+### US-19 Status stok
+**Prompt:**
+Lanjutkan ke US-19 Status stok dan an juga isi file PROMPT.MD YAA DAN SETERUS NYA JIKA SAYA KASI US DI ISI YA
+
+**Hasil & Perbaikan:**
+- Mendukung status/jumlah stok produk (`stok === 0` atau `status_stok === 'habis'`).
+- Menampilkan penanda/badge "Habis" di kartu produk (`KartuProduk.jsx`) dan halaman detail produk (`app/produk/[id]/page.jsx`).
+- Menonaktifkan/menyembunyikan tombol pesan WhatsApp untuk produk yang habis dan menampilkan informasi bahwa stok produk sedang kosong.
+
