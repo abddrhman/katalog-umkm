@@ -368,3 +368,26 @@ Lanjutkan ke US-19 Status stok dan an juga isi file PROMPT.MD YAA DAN SETERUS NY
 - Menampilkan penanda/badge "Habis" di kartu produk (`KartuProduk.jsx`) dan halaman detail produk (`app/produk/[id]/page.jsx`).
 - Menonaktifkan/menyembunyikan tombol pesan WhatsApp untuk produk yang habis dan menampilkan informasi bahwa stok produk sedang kosong.
 
+
+---
+
+### US-20 Harga coret dan badge
+**Prompt:**
+Lanjutkan ke US-20 Harga coret dan badge
+
+**Hasil & Perbaikan:**
+- Menambahkan dukungan harga diskon / coret: jika produk memiliki harga diskon (`harga_diskon`), harga diskon menjadi harga aktif dan harga normal ditampilkan tercoret (`line-through`) di kartu produk dan halaman detail.
+- Menambahkan penanda badge "Baru" dan "Terlaris" pada foto dan label kategori berdasarkan atribut data produk.
+- Menyesuaikan harga yang dikirim ke pesan otomatis WhatsApp agar menggunakan harga diskon yang berlaku.
+
+---
+
+### US-20 Harga coret dan badge
+**Prompt:**
+Lanjutkan ke US-20 Harga coret dan badge
+
+**Hasil & Perbaikan:**
+- Menambahkan dukungan harga diskon / coret: jika produk memiliki harga diskon (`harga_diskon`), harga diskon menjadi harga aktif dan harga normal ditampilkan tercoret (`line-through`) di kartu produk dan halaman detail.
+- Menambahkan penanda badge "Baru" dan "Terlaris" pada foto dan label kategori berdasarkan atribut data produk.
+- Menyesuaikan harga yang dikirim ke pesan otomatis WhatsApp agar menggunakan harga diskon yang berlaku.
+

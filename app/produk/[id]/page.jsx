@@ -50,6 +50,20 @@ export default async function HalamanDetailProduk({ params }) {
     produk.status_stok === "habis" ||
     produk.tersedia === false;
 
+  // Cek harga diskon / coret
+  const hargaDiskon =
+    produk.harga_diskon && produk.harga_diskon < produk.harga
+      ? produk.harga_diskon
+      : null;
+  const hargaTampil = hargaDiskon || produk.harga;
+  const hargaCoret = hargaDiskon ? produk.harga : null;
+
+  // Cek badge (Baru / Terlaris / Promo)
+  const badge =
+    produk.badge ||
+    (produk.terlaris ? "Terlaris" : null) ||
+    (produk.is_baru || produk.baru ? "Baru" : null);
+
   return (
     <div className="flex flex-col gap-12 py-8 md:py-12">
       <article className="grid gap-8 md:grid-cols-2">
@@ -59,10 +73,22 @@ export default async function HalamanDetailProduk({ params }) {
             fotoTambahan={produk.foto_tambahan || produk.galeri}
             nama={produk.nama}
           />
-          {isHabis && (
+          {isHabis ? (
             <span className="absolute top-3 right-3 z-10 rounded-lg bg-bahaya px-3 py-1 text-sm font-bold text-white shadow-md">
               Habis
             </span>
+          ) : (
+            badge && (
+              <span
+                className={`absolute top-3 right-3 z-10 rounded-lg px-3 py-1 text-sm font-bold text-white shadow-md ${
+                  badge.toLowerCase() === "terlaris"
+                    ? "bg-amber-600"
+                    : "bg-utama"
+                }`}
+              >
+                {badge}
+              </span>
+            )
           )}
         </div>
 
@@ -80,13 +106,27 @@ export default async function HalamanDetailProduk({ params }) {
                 Stok Habis
               </span>
             )}
+            {!isHabis && badge && (
+              <span className="rounded-md bg-permukaan px-2 py-0.5 text-xs font-bold text-utama">
+                {badge}
+              </span>
+            )}
           </div>
           <h1 className="text-3xl font-extrabold leading-tight tracking-tight">
             {produk.nama}
           </h1>
-          <p className="self-start rounded-md bg-harga-latar px-3 py-1 text-xl font-bold text-harga">
-            {formatRupiah(produk.harga)}
-          </p>
+
+          <div className="flex flex-wrap items-baseline gap-2">
+            <p className="self-start rounded-md bg-harga-latar px-3 py-1 text-xl font-bold text-harga">
+              {formatRupiah(hargaTampil)}
+            </p>
+            {hargaCoret && (
+              <span className="text-base text-teks-lembut line-through">
+                {formatRupiah(hargaCoret)}
+              </span>
+            )}
+          </div>
+
           <p className="max-w-prose leading-relaxed text-teks-lembut">
             {produk.deskripsi}
           </p>
@@ -99,7 +139,7 @@ export default async function HalamanDetailProduk({ params }) {
               </p>
             </div>
           ) : (
-            <TombolWhatsApp produk={produk} />
+            <TombolWhatsApp produk={{ ...produk, harga: hargaTampil }} />
           )}
         </div>
       </article>

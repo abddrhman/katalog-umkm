@@ -7,6 +7,20 @@ export default function KartuProduk({ produk }) {
     produk.status_stok === "habis" ||
     produk.tersedia === false;
 
+  // Cek harga diskon / coret
+  const hargaDiskon =
+    produk.harga_diskon && produk.harga_diskon < produk.harga
+      ? produk.harga_diskon
+      : null;
+  const hargaTampil = hargaDiskon || produk.harga;
+  const hargaCoret = hargaDiskon ? produk.harga : null;
+
+  // Cek badge (Baru / Terlaris / Promo)
+  const badge =
+    produk.badge ||
+    (produk.terlaris ? "Terlaris" : null) ||
+    (produk.is_baru || produk.baru ? "Baru" : null);
+
   return (
     <Link
       href={`/produk/${produk.id}`}
@@ -20,18 +34,38 @@ export default function KartuProduk({ produk }) {
             isHabis ? "opacity-60 grayscale" : ""
           }`}
         />
-        {isHabis && (
+        {/* Badge Habis atau Badge Khusus */}
+        {isHabis ? (
           <span className="absolute top-2 right-2 rounded-md bg-bahaya px-2 py-0.5 text-xs font-bold text-white shadow-sm">
             Habis
           </span>
+        ) : (
+          badge && (
+            <span
+              className={`absolute top-2 right-2 rounded-md px-2 py-0.5 text-xs font-bold text-white shadow-sm ${
+                badge.toLowerCase() === "terlaris"
+                  ? "bg-amber-600"
+                  : "bg-utama"
+              }`}
+            >
+              {badge}
+            </span>
+          )
         )}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3">
         <p className="text-xs text-teks-lembut">{produk.kategori}</p>
         <h3 className="font-semibold leading-snug group-hover:text-utama">{produk.nama}</h3>
-        <p className="mt-auto self-start rounded-md bg-harga-latar px-2 py-0.5 text-sm font-bold text-harga">
-          {formatRupiah(produk.harga)}
-        </p>
+        <div className="mt-auto flex flex-wrap items-center gap-1.5">
+          <p className="rounded-md bg-harga-latar px-2 py-0.5 text-sm font-bold text-harga">
+            {formatRupiah(hargaTampil)}
+          </p>
+          {hargaCoret && (
+            <span className="text-xs text-teks-lembut line-through">
+              {formatRupiah(hargaCoret)}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );
