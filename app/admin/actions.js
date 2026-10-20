@@ -110,3 +110,49 @@ export async function createProductAction(prevState, formData) {
   revalidatePath("/");
   redirect("/admin");
 }
+
+export async function updateProductAction(id, prevState, formData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Anda harus login untuk mengubah produk." };
+  }
+
+  const nama = formData.get("nama")?.toString().trim();
+  const hargaRaw = formData.get("harga");
+  const kategori = formData.get("kategori")?.toString().trim() || null;
+  const foto_url = formData.get("foto_url")?.toString().trim() || null;
+  const deskripsi = formData.get("deskripsi")?.toString().trim() || null;
+
+  if (!nama) {
+    return { error: "Nama produk wajib diisi." };
+  }
+
+  const harga = parseInt(hargaRaw, 10);
+  if (isNaN(harga) || harga < 0) {
+    return { error: "Harga produk harus berupa angka valid dan tidak boleh negatif." };
+  }
+
+  const { error } = await supabase
+    .from("produk")
+    .update({
+      nama,
+      harga,
+      kategori,
+      foto_url,
+      deskripsi,
+    })
+    .eq("id", id);
+
+  if (error) {
+    return { error: error.message || "Gagal mengubah produk di database." };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+  revalidatePath(`/produk/${id}`);
+  redirect("/admin");
+}
