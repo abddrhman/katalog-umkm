@@ -157,7 +157,6 @@ export async function updateProductAction(id, prevState, formData) {
   redirect("/admin");
 }
 
-
 export async function deleteProductAction(id) {
   const supabase = await createClient();
   const {
@@ -178,4 +177,71 @@ export async function deleteProductAction(id) {
   revalidatePath("/");
   revalidatePath(`/produk/${id}`);
 }
+
+export async function generateProductDescriptionAction({ nama, kategori }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Anda harus login untuk menggunakan fitur ini." };
+  }
+
+  if (!nama) {
+    return { error: "Nama produk wajib diisi terlebih dahulu untuk membuat deskripsi." };
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  if (!apiKey) {
+    return {
+      error:
+        "GEMINI_API_KEY belum diatur di environment variable server (.env.local).",
+    };
+  }
+
+  const prompt = `Buatlah deskripsi produk yang menarik, singkat, dan menjual dalam 2-3 kalimat berbahasa Indonesia untuk produk UMKM berikut:\nNama Produk: ${nama}\nKategori: ${kategori || "-"}\nDeskripsi:`;
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: prompt }],
+            },
+          ],
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      return {
+        error:
+          data.error?.message || "Gagal membuat deskripsi dengan Gemini API.",
+      };
+    }
+
+    const deskripsi =
+      data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+
+    if (!deskripsi) {
+      return { error: "AI tidak mengembalikan teks deskripsi." };
+    }
+
+    return { success: true, deskripsi };
+  } catch (err) {
+    return {
+      error: err.message || "Terjadi kesalahan saat memanggil Gemini API.",
+    };
+  }
+}
+
 
