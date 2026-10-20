@@ -418,3 +418,24 @@ Lanjutkan ke US-21 Keranjang, pesan semua via WhatsApp
 - Membuat halaman `/keranjang` (`app/keranjang/page.jsx`) untuk melihat daftar pesanan, mengubah kuantitas (+/-), menghapus item, serta menghitung total harga secara akurat.
 - Menambahkan tombol "Pesan Semua via WhatsApp" yang menggabungkan seluruh daftar produk, kuantitas, catatan, dan total harga ke dalam satu pesan WhatsApp terformat rapi.
 
+
+---
+
+### US-22 Halaman Tentang dan kontak toko
+**Prompt:**
+Lanjutkan ke US-22 Halaman Tentang dan kontak toko
+
+**Hasil & Perbaikan:**
+- Membuat halaman `/tentang` (`app/tentang/page.jsx`) yang menyajikan profil toko, alamat lengkap, jam operasional toko, nomor WhatsApp, serta tautan kontak langsung dari `lib/toko.js`.
+- Menautkan halaman `/tentang` ke navigasi utama di `components/Header.jsx` dan tautan di `components/Footer.jsx`.
+
+---
+
+### US-22 Halaman Tentang dan kontak toko
+**Prompt:**
+Lanjutkan ke US-22 Halaman Tentang dan kontak toko
+
+**Hasil & Perbaikan:**
+- Membuat halaman `/tentang` (`app/tentang/page.jsx`) yang menyajikan profil toko, alamat lengkap, jam operasional toko, nomor WhatsApp, serta tautan kontak langsung dari `lib/toko.js`.
+- Menautkan halaman `/tentang` ke navigasi utama di `components/Header.jsx` dan tautan di `components/Footer.jsx`.
+
