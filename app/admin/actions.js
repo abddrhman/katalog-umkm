@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/auth";
 
 export async function loginAction(prevState, formData) {
@@ -64,4 +65,48 @@ export async function changePasswordAction(prevState, formData) {
   }
 
   return { success: "Password berhasil diperbarui." };
+}
+
+export async function createProductAction(prevState, formData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Anda harus login untuk menambah produk." };
+  }
+
+  const nama = formData.get("nama")?.toString().trim();
+  const hargaRaw = formData.get("harga");
+  const kategori = formData.get("kategori")?.toString().trim() || null;
+  const foto_url = formData.get("foto_url")?.toString().trim() || null;
+  const deskripsi = formData.get("deskripsi")?.toString().trim() || null;
+
+  if (!nama) {
+    return { error: "Nama produk wajib diisi." };
+  }
+
+  const harga = parseInt(hargaRaw, 10);
+  if (isNaN(harga) || harga < 0) {
+    return { error: "Harga produk harus berupa angka valid dan tidak boleh negatif." };
+  }
+
+  const { error } = await supabase.from("produk").insert([
+    {
+      nama,
+      harga,
+      kategori,
+      foto_url,
+      deskripsi,
+    },
+  ]);
+
+  if (error) {
+    return { error: error.message || "Gagal menyimpan produk ke database." };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+  redirect("/admin");
 }
