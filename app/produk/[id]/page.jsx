@@ -6,8 +6,61 @@ import KartuProduk from "@/components/KartuProduk";
 import GaleriProduk from "@/components/GaleriProduk";
 import { formatRupiah } from "@/lib/format";
 import { createServerClient } from "@/lib/supabase/server";
+import { toko } from "@/lib/toko";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+
+  try {
+    const supabase = createServerClient();
+    const { data: produk } = await supabase
+      .from("produk")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (!produk) {
+      return {
+        title: `Produk Tidak Ditemukan - ${toko.nama}`,
+      };
+    }
+
+    const judul = `${produk.nama} | ${toko.nama}`;
+    const deskripsi =
+      produk.deskripsi ||
+      `Beli ${produk.nama} dengan harga ${formatRupiah(produk.harga_diskon || produk.harga)} di ${toko.nama}.`;
+    const foto = produk.foto_url || "/icons/icon-512.png";
+
+    return {
+      title: judul,
+      description: deskripsi,
+      openGraph: {
+        title: judul,
+        description: deskripsi,
+        images: [
+          {
+            url: foto,
+            alt: produk.nama,
+          },
+        ],
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: judul,
+        description: deskripsi,
+        images: [foto],
+      },
+    };
+  } catch {
+    return {
+      title: toko.nama,
+      description: toko.tagline,
+    };
+  }
+}
 
 export default async function HalamanDetailProduk({ params }) {
   const { id } = await params;

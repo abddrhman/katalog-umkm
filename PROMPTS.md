@@ -508,3 +508,22 @@ Lanjutkan ke US-25 Mode gelap
 - Membuat komponen pemilih tema `components/TombolTema.jsx` yang mengganti mode antara terang dan gelap (ikon ☀️ / 🌙) dan menyimpannya di `localStorage`.
 - Menautkan tombol tema ke bilah navigasi `components/Header.jsx`.
 
+
+---
+
+### US-26 Metadata SEO dan Open Graph
+**Prompt:**
+Lanjutkan ke US-26 Metadata SEO dan Open Graph
+
+**Hasil & Perbaikan:**
+- Menambahkan fungsi `generateMetadata({ params })` di `app/produk/[id]/page.jsx` untuk menghasilkan judul halaman (`title`), deskripsi SEO (`description`), serta tag Open Graph (`og:title`, `og:description`, `og:image`) dan Twitter Card yang dinamis sesuai data produk dari database.
+
+---
+
+### US-26 Metadata SEO dan Open Graph
+**Prompt:**
+Lanjutkan ke US-26 Metadata SEO dan Open Graph
+
+**Hasil & Perbaikan:**
+- Menambahkan fungsi `generateMetadata({ params })` di `app/produk/[id]/page.jsx` untuk menghasilkan judul halaman (`title`), deskripsi SEO (`description`), serta tag Open Graph (`og:title`, `og:description`, `og:image`) dan Twitter Card yang dinamis sesuai data produk dari database.
+
