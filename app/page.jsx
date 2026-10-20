@@ -9,6 +9,7 @@ export default async function HalamanKatalog({ searchParams }) {
   const resolvedSearchParams = await searchParams;
   const kategoriAktif = resolvedSearchParams?.kategori || "";
   const queryCari = resolvedSearchParams?.q || "";
+  const urutanAktif = resolvedSearchParams?.urutan || "terbaru";
 
   let daftarProduk = [];
   let semuaKategori = [];
@@ -21,7 +22,7 @@ export default async function HalamanKatalog({ searchParams }) {
     const { data: produkKategori } = await supabase
       .from("produk")
       .select("kategori");
-    
+
     if (produkKategori) {
       semuaKategori = [
         ...new Set(produkKategori.map((p) => p.kategori).filter(Boolean)),
@@ -39,7 +40,17 @@ export default async function HalamanKatalog({ searchParams }) {
       query = query.ilike("nama", `%${queryCari}%`);
     }
 
-    const { data, error } = await query.order("created_at", { ascending: false });
+    // Terapkan pengurutan di tingkat database (query)
+    if (urutanAktif === "termurah") {
+      query = query.order("harga", { ascending: true });
+    } else if (urutanAktif === "termahal") {
+      query = query.order("harga", { ascending: false });
+    } else {
+      // default: terbaru
+      query = query.order("created_at", { ascending: false });
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       pesanError = error.message || "Gagal memuat produk dari database.";
@@ -49,6 +60,15 @@ export default async function HalamanKatalog({ searchParams }) {
   } catch (err) {
     pesanError = err.message || "Terjadi kesalahan saat menghubungkan ke database.";
   }
+
+  const buildUrl = ({ kategori = kategoriAktif, q = queryCari, urutan = urutanAktif } = {}) => {
+    const params = new URLSearchParams();
+    if (kategori) params.set("kategori", kategori);
+    if (q) params.set("q", q);
+    if (urutan && urutan !== "terbaru") params.set("urutan", urutan);
+    const qs = params.toString();
+    return qs ? `/?${qs}` : "/";
+  };
 
   return (
     <>
@@ -66,40 +86,68 @@ export default async function HalamanKatalog({ searchParams }) {
             Produk kami
           </h2>
 
-          {/* Form Pencarian */}
-          <form method="GET" action="/" className="flex items-center gap-2">
-            {kategoriAktif && (
-              <input type="hidden" name="kategori" value={kategoriAktif} />
-            )}
-            <input
-              type="search"
-              name="q"
-              defaultValue={queryCari}
-              placeholder="Cari produk..."
-              className="rounded-lg border border-garis bg-latar px-3 py-1.5 text-sm outline-none focus:border-utama"
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-utama px-3 py-1.5 text-sm font-semibold text-white hover:bg-utama-gelap"
-            >
-              Cari
-            </button>
-            {queryCari && (
-              <Link
-                href={kategoriAktif ? `/?kategori=${encodeURIComponent(kategoriAktif)}` : "/"}
-                className="text-xs text-teks-lembut underline hover:text-utama"
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Pilihan Urutan */}
+            <form method="GET" action="/" className="flex items-center gap-1.5 text-sm">
+              {kategoriAktif && <input type="hidden" name="kategori" value={kategoriAktif} />}
+              {queryCari && <input type="hidden" name="q" value={queryCari} />}
+              <label htmlFor="select-urutan" className="text-xs font-semibold text-teks-lembut">
+                Urutkan:
+              </label>
+              <select
+                id="select-urutan"
+                name="urutan"
+                defaultValue={urutanAktif}
+                className="rounded-lg border border-garis bg-latar px-2.5 py-1.5 text-sm text-teks outline-none focus:border-utama"
               >
-                Reset
-              </Link>
-            )}
-          </form>
+                <option value="terbaru">Terbaru</option>
+                <option value="termurah">Termurah</option>
+                <option value="termahal">Termahal</option>
+              </select>
+              <button
+                type="submit"
+                className="rounded-lg border border-garis bg-latar px-2.5 py-1.5 text-xs font-semibold hover:border-utama hover:text-utama"
+              >
+                Terapkan
+              </button>
+            </form>
+
+            {/* Form Pencarian */}
+            <form method="GET" action="/" className="flex items-center gap-2">
+              {kategoriAktif && <input type="hidden" name="kategori" value={kategoriAktif} />}
+              {urutanAktif && urutanAktif !== "terbaru" && (
+                <input type="hidden" name="urutan" value={urutanAktif} />
+              )}
+              <input
+                type="search"
+                name="q"
+                defaultValue={queryCari}
+                placeholder="Cari produk..."
+                className="rounded-lg border border-garis bg-latar px-3 py-1.5 text-sm outline-none focus:border-utama"
+              />
+              <button
+                type="submit"
+                className="rounded-lg bg-utama px-3 py-1.5 text-sm font-semibold text-white hover:bg-utama-gelap"
+              >
+                Cari
+              </button>
+              {(queryCari || kategoriAktif || urutanAktif !== "terbaru") && (
+                <Link
+                  href="/"
+                  className="text-xs text-teks-lembut underline hover:text-utama"
+                >
+                  Reset
+                </Link>
+              )}
+            </form>
+          </div>
         </div>
 
         {/* Filter Kategori */}
         {semuaKategori.length > 0 && (
           <div className="flex flex-wrap gap-2">
             <Link
-              href={queryCari ? `/?q=${encodeURIComponent(queryCari)}` : "/"}
+              href={buildUrl({ kategori: "" })}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                 !kategoriAktif
                   ? "bg-utama text-white"
@@ -111,11 +159,7 @@ export default async function HalamanKatalog({ searchParams }) {
             {semuaKategori.map((kat) => (
               <Link
                 key={kat}
-                href={
-                  queryCari
-                    ? `/?kategori=${encodeURIComponent(kat)}&q=${encodeURIComponent(queryCari)}`
-                    : `/?kategori=${encodeURIComponent(kat)}`
-                }
+                href={buildUrl({ kategori: kat })}
                 className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                   kategoriAktif === kat
                     ? "bg-utama text-white"
