@@ -1,7 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { formatRupiah } from "@/lib/format";
+import { useFavorit } from "@/lib/favorit-context";
 
 export default function KartuProduk({ produk }) {
+  const { isFavorit, toggleFavorit } = useFavorit();
+  const terfavorit = isFavorit(produk.id);
+
   const isHabis =
     produk.stok === 0 ||
     produk.status_stok === "habis" ||
@@ -21,6 +27,12 @@ export default function KartuProduk({ produk }) {
     (produk.terlaris ? "Terlaris" : null) ||
     (produk.is_baru || produk.baru ? "Baru" : null);
 
+  const handleKlikFavorit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorit(produk.id);
+  };
+
   return (
     <Link
       href={`/produk/${produk.id}`}
@@ -34,6 +46,17 @@ export default function KartuProduk({ produk }) {
             isHabis ? "opacity-60 grayscale" : ""
           }`}
         />
+
+        {/* Tombol Favorit */}
+        <button
+          type="button"
+          onClick={handleKlikFavorit}
+          aria-label={terfavorit ? "Hapus dari favorit" : "Tambah ke favorit"}
+          className="absolute top-2 left-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-latar/80 backdrop-blur-sm text-sm shadow-sm transition-transform hover:scale-110 active:scale-95"
+        >
+          {terfavorit ? "❤️" : "🤍"}
+        </button>
+
         {/* Badge Habis atau Badge Khusus */}
         {isHabis ? (
           <span className="absolute top-2 right-2 rounded-md bg-bahaya px-2 py-0.5 text-xs font-bold text-white shadow-sm">

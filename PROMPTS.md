@@ -460,3 +460,28 @@ Lanjutkan ke US-23 Bagikan atau salin link produk
 - Membuat komponen `components/TombolBagikan.jsx` pada halaman detail produk yang mendukung Web Share API pada browser perangkat seluler dan otomatis fallback menyalin tautan ke clipboard (`navigator.clipboard.writeText`).
 - Menampilkan umpan balik visual yang jelas setelah tombol ditekan: teks *"✓ Link tersalin"* atau *"✓ Berhasil dibagikan"*.
 
+
+---
+
+### US-24 Favorit tersimpan di browser
+**Prompt:**
+Lanjutkan ke US-24 Favorit tersimpan di browser
+
+**Hasil & Perbaikan:**
+- Membuat `FavoritProvider` di `lib/favorit-context.jsx` yang menyimpan ID produk favorit pengguna ke `localStorage` browser sehingga tetap tersimpan setelah halaman dimuat ulang.
+- Menambahkan tombol interaktif favorit (ikon hati ❤️ / 🤍) pada kartu produk `components/KartuProduk.jsx`.
+- Menambahkan tautan dan indikator jumlah favorit di `components/Header.jsx`.
+- Membuat halaman khusus produk favorit `/favorit` (`app/favorit/page.jsx`) beserta route handler server `/api/favorit` untuk menampilkan daftar produk yang telah difavoritkan.
+
+---
+
+### US-24 Favorit tersimpan di browser
+**Prompt:**
+Lanjutkan ke US-24 Favorit tersimpan di browser
+
+**Hasil & Perbaikan:**
+- Membuat `FavoritProvider` di `lib/favorit-context.jsx` yang menyimpan ID produk favorit pengguna ke `localStorage` browser sehingga tetap tersimpan setelah halaman dimuat ulang.
+- Menambahkan tombol interaktif favorit (ikon hati ❤️ / 🤍) pada kartu produk `components/KartuProduk.jsx`.
+- Menambahkan tautan dan indikator jumlah favorit di `components/Header.jsx`.
+- Membuat halaman khusus produk favorit `/favorit` (`app/favorit/page.jsx`) beserta route handler server `/api/favorit` untuk menampilkan daftar produk yang telah difavoritkan.
+
