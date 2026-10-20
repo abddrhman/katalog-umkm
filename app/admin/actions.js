@@ -157,26 +157,6 @@ export async function updateProductAction(id, prevState, formData) {
   redirect("/admin");
 }
 
-export async function deleteProductAction(id) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw new Error("Anda harus login untuk menghapus produk.");
-  }
-
-  const { error } = await supabase.from("produk").delete().eq("id", id);
-
-  if (error) {
-    throw new Error(error.message || "Gagal menghapus produk dari database.");
-  }
-
-  revalidatePath("/admin");
-  revalidatePath("/");
-  revalidatePath(`/produk/${id}`);
-}
 
 export async function deleteProductAction(id) {
   const supabase = await createClient();
