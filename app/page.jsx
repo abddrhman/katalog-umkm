@@ -5,20 +5,25 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+const PER_HALAMAN = 6;
+
 export default async function HalamanKatalog({ searchParams }) {
   const resolvedSearchParams = await searchParams;
   const kategoriAktif = resolvedSearchParams?.kategori || "";
   const queryCari = resolvedSearchParams?.q || "";
   const urutanAktif = resolvedSearchParams?.urutan || "terbaru";
+  const halamanAktif = Math.max(1, parseInt(resolvedSearchParams?.halaman || "1", 10) || 1);
 
   let daftarProduk = [];
   let semuaKategori = [];
+  let totalProduk = 0;
+  let totalHalaman = 1;
   let pesanError = null;
 
   try {
     const supabase = createServerClient();
 
-    // Ambil daftar kategori unik untuk tombol filter
+    // Ambil daftar kategori unik
     const { data: produkKategori } = await supabase
       .from("produk")
       .select("kategori");
@@ -29,8 +34,10 @@ export default async function HalamanKatalog({ searchParams }) {
       ];
     }
 
-    // Bangun kueri produk
-    let query = supabase.from("produk").select("*");
+    // Bangun kueri produk dengan count
+    let query = supabase
+      .from("produk")
+      .select("*", { count: "exact" });
 
     if (kategoriAktif) {
       query = query.eq("kategori", kategoriAktif);
@@ -40,32 +47,44 @@ export default async function HalamanKatalog({ searchParams }) {
       query = query.ilike("nama", `%${queryCari}%`);
     }
 
-    // Terapkan pengurutan di tingkat database (query)
+    // Urutan query
     if (urutanAktif === "termurah") {
       query = query.order("harga", { ascending: true });
     } else if (urutanAktif === "termahal") {
       query = query.order("harga", { ascending: false });
     } else {
-      // default: terbaru
       query = query.order("created_at", { ascending: false });
     }
 
-    const { data, error } = await query;
+    // Paginasi di tingkat query database (range)
+    const mulaiDari = (halamanAktif - 1) * PER_HALAMAN;
+    const sampaiDengan = mulaiDari + PER_HALAMAN - 1;
+    query = query.range(mulaiDari, sampaiDengan);
+
+    const { data, count, error } = await query;
 
     if (error) {
       pesanError = error.message || "Gagal memuat produk dari database.";
     } else {
       daftarProduk = data || [];
+      totalProduk = count || 0;
+      totalHalaman = Math.max(1, Math.ceil(totalProduk / PER_HALAMAN));
     }
   } catch (err) {
     pesanError = err.message || "Terjadi kesalahan saat menghubungkan ke database.";
   }
 
-  const buildUrl = ({ kategori = kategoriAktif, q = queryCari, urutan = urutanAktif } = {}) => {
+  const buildUrl = ({
+    kategori = kategoriAktif,
+    q = queryCari,
+    urutan = urutanAktif,
+    halaman = 1,
+  } = {}) => {
     const params = new URLSearchParams();
     if (kategori) params.set("kategori", kategori);
     if (q) params.set("q", q);
     if (urutan && urutan !== "terbaru") params.set("urutan", urutan);
+    if (halaman && halaman > 1) params.set("halaman", halaman.toString());
     const qs = params.toString();
     return qs ? `/?${qs}` : "/";
   };
@@ -147,7 +166,7 @@ export default async function HalamanKatalog({ searchParams }) {
         {semuaKategori.length > 0 && (
           <div className="flex flex-wrap gap-2">
             <Link
-              href={buildUrl({ kategori: "" })}
+              href={buildUrl({ kategori: "", halaman: 1 })}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                 !kategoriAktif
                   ? "bg-utama text-white"
@@ -159,7 +178,7 @@ export default async function HalamanKatalog({ searchParams }) {
             {semuaKategori.map((kat) => (
               <Link
                 key={kat}
-                href={buildUrl({ kategori: kat })}
+                href={buildUrl({ kategori: kat, halaman: 1 })}
                 className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                   kategoriAktif === kat
                     ? "bg-utama text-white"
@@ -184,11 +203,64 @@ export default async function HalamanKatalog({ searchParams }) {
               : "Belum ada produk"}
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            {daftarProduk.map((produk) => (
-              <KartuProduk key={produk.id} produk={produk} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              {daftarProduk.map((produk) => (
+                <KartuProduk key={produk.id} produk={produk} />
+              ))}
+            </div>
+
+            {/* Navigasi Paginasi */}
+            {totalHalaman > 1 && (
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-garis pt-6 text-sm">
+                <span className="text-xs text-teks-lembut">
+                  Halaman <strong>{halamanAktif}</strong> dari <strong>{totalHalaman}</strong> ({totalProduk} produk)
+                </span>
+
+                <div className="flex items-center gap-2">
+                  {halamanAktif > 1 ? (
+                    <Link
+                      href={buildUrl({ halaman: halamanAktif - 1 })}
+                      className="rounded-lg border border-garis px-3 py-1.5 text-xs font-semibold hover:border-utama hover:text-utama"
+                    >
+                      ← Sebelumnya
+                    </Link>
+                  ) : (
+                    <span className="rounded-lg border border-garis px-3 py-1.5 text-xs font-semibold text-teks-lembut opacity-40">
+                      ← Sebelumnya
+                    </span>
+                  )}
+
+                  {Array.from({ length: totalHalaman }, (_, i) => i + 1).map((hal) => (
+                    <Link
+                      key={hal}
+                      href={buildUrl({ halaman: hal })}
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold transition-colors ${
+                        hal === halamanAktif
+                          ? "bg-utama text-white"
+                          : "border border-garis bg-latar hover:border-utama hover:text-utama"
+                      }`}
+                    >
+                      {hal}
+                    </Link>
+                  ))}
+
+                  {halamanAktif < totalHalaman ? (
+                    <Link
+                      href={buildUrl({ halaman: halamanAktif + 1 })}
+                      className="rounded-lg border border-garis px-3 py-1.5 text-xs font-semibold hover:border-utama hover:text-utama"
+                    >
+                      Selanjutnya →
+                    </Link>
+                  ) : (
+                    <span className="rounded-lg border border-garis px-3 py-1.5 text-xs font-semibold text-teks-lembut opacity-40">
+                      Selanjutnya →
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </section>
     </>
