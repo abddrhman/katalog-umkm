@@ -439,3 +439,24 @@ Lanjutkan ke US-22 Halaman Tentang dan kontak toko
 - Membuat halaman `/tentang` (`app/tentang/page.jsx`) yang menyajikan profil toko, alamat lengkap, jam operasional toko, nomor WhatsApp, serta tautan kontak langsung dari `lib/toko.js`.
 - Menautkan halaman `/tentang` ke navigasi utama di `components/Header.jsx` dan tautan di `components/Footer.jsx`.
 
+
+---
+
+### US-23 Bagikan atau salin link produk
+**Prompt:**
+Lanjutkan ke US-23 Bagikan atau salin link produk
+
+**Hasil & Perbaikan:**
+- Membuat komponen `components/TombolBagikan.jsx` pada halaman detail produk yang mendukung Web Share API pada browser perangkat seluler dan otomatis fallback menyalin tautan ke clipboard (`navigator.clipboard.writeText`).
+- Menampilkan umpan balik visual yang jelas setelah tombol ditekan: teks *"✓ Link tersalin"* atau *"✓ Berhasil dibagikan"*.
+
+---
+
+### US-23 Bagikan atau salin link produk
+**Prompt:**
+Lanjutkan ke US-23 Bagikan atau salin link produk
+
+**Hasil & Perbaikan:**
+- Membuat komponen `components/TombolBagikan.jsx` pada halaman detail produk yang mendukung Web Share API pada browser perangkat seluler dan otomatis fallback menyalin tautan ke clipboard (`navigator.clipboard.writeText`).
+- Menampilkan umpan balik visual yang jelas setelah tombol ditekan: teks *"✓ Link tersalin"* atau *"✓ Berhasil dibagikan"*.
+

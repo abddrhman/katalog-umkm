@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import TombolWhatsApp from "@/components/TombolWhatsApp";
+import TombolBagikan from "@/components/TombolBagikan";
 import KartuProduk from "@/components/KartuProduk";
 import GaleriProduk from "@/components/GaleriProduk";
 import { formatRupiah } from "@/lib/format";
@@ -93,12 +94,16 @@ export default async function HalamanDetailProduk({ params }) {
         </div>
 
         <div className="flex flex-col gap-4">
-          <Link
-            href="/"
-            className="text-sm text-teks-lembut underline underline-offset-4 hover:text-utama"
-          >
-            Kembali ke katalog
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link
+              href="/"
+              className="text-sm text-teks-lembut underline underline-offset-4 hover:text-utama"
+            >
+              Kembali ke katalog
+            </Link>
+            <TombolBagikan produk={produk} />
+          </div>
+
           <div className="flex items-center gap-2">
             <p className="text-sm text-teks-lembut">{produk.kategori}</p>
             {isHabis && (
