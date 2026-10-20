@@ -391,3 +391,30 @@ Lanjutkan ke US-20 Harga coret dan badge
 - Menambahkan penanda badge "Baru" dan "Terlaris" pada foto dan label kategori berdasarkan atribut data produk.
 - Menyesuaikan harga yang dikirim ke pesan otomatis WhatsApp agar menggunakan harga diskon yang berlaku.
 
+
+---
+
+### US-21 Keranjang, pesan semua via WhatsApp
+**Prompt:**
+Lanjutkan ke US-21 Keranjang, pesan semua via WhatsApp
+
+**Hasil & Perbaikan:**
+- Membuat Context & Provider `KeranjangProvider` di `lib/keranjang-context.jsx` yang menyimpan data item ke `localStorage` sehingga data keranjang bertahan saat berpindah halaman.
+- Menambahkan ikon & indikator jumlah keranjang belanja pada `components/Header.jsx`.
+- Menambahkan tombol "Tambah ke keranjang" di `components/TombolWhatsApp.jsx` (halaman detail).
+- Membuat halaman `/keranjang` (`app/keranjang/page.jsx`) untuk melihat daftar pesanan, mengubah kuantitas (+/-), menghapus item, serta menghitung total harga secara akurat.
+- Menambahkan tombol "Pesan Semua via WhatsApp" yang menggabungkan seluruh daftar produk, kuantitas, catatan, dan total harga ke dalam satu pesan WhatsApp terformat rapi.
+
+---
+
+### US-21 Keranjang, pesan semua via WhatsApp
+**Prompt:**
+Lanjutkan ke US-21 Keranjang, pesan semua via WhatsApp
+
+**Hasil & Perbaikan:**
+- Membuat Context & Provider `KeranjangProvider` di `lib/keranjang-context.jsx` yang menyimpan data item ke `localStorage` sehingga data keranjang bertahan saat berpindah halaman.
+- Menambahkan ikon & indikator jumlah keranjang belanja pada `components/Header.jsx`.
+- Menambahkan tombol "Tambah ke keranjang" di `components/TombolWhatsApp.jsx` (halaman detail).
+- Membuat halaman `/keranjang` (`app/keranjang/page.jsx`) untuk melihat daftar pesanan, mengubah kuantitas (+/-), menghapus item, serta menghitung total harga secara akurat.
+- Menambahkan tombol "Pesan Semua via WhatsApp" yang menggabungkan seluruh daftar produk, kuantitas, catatan, dan total harga ke dalam satu pesan WhatsApp terformat rapi.
+
